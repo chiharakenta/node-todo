@@ -32,17 +32,21 @@ app.use(methodOverride(function (req, res) {
 let todos = [
   {
     id: 1,
-    content: '洗濯'
+    content: '洗濯',
+    done: false
   },
   {
     id: 2,
-    content: '料理'
+    content: '料理',
+    done: false
   }
 ];
 
 // 一覧表示
 app.get('/', (req, res) => {
-  res.render('index.ejs', { todos: todos } );
+  let notDoneTodos = todos.filter(todo => !todo.done);
+  let doneTodos = todos.filter(todo => todo.done);
+  res.render('index.ejs', { notDoneTodos: notDoneTodos, doneTodos: doneTodos } );
 });
 
 // 新規作成
@@ -69,6 +73,16 @@ app.put('/update/:id', (req, res) => {
   for (let i in todos) {
     if (todos[i].id == req.params.id) {
       todos[i].content = req.body.todoContent;
+    }
+  }
+  res.redirect('/');
+});
+
+// 完了
+app.put('/complete/:id', (req, res) => {
+  for (let i in todos) {
+    if (todos[i].id == req.params.id) {
+      todos[i].done = true;
     }
   }
   res.redirect('/');
